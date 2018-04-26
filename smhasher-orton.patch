@@ -1,0 +1,69 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 92cc358..004eece 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -234,6 +234,26 @@ add_library(SMHasherSupport
+   mum.cc
+   jody_hash32.c
+   jody_hash64.c
++  mrx_test32.c
++  mrx_hash32.c
++  mrx_test64.c
++  mrx_hash64.c
++  mlx_test.c
++  mlx_hash.c
++  spb_test.c
++  spb_hash.c
++  sse_test.c
++  sse_hash.c
++  sse_test2.c
++  sse_hash2.c
++  clm_test.c
++  clm_hash.c
++  avx_test.c
++  avx_hash.c
++  avx_test2.c
++  avx_hash2.c
++  aes_test.c
++  aes_hash.c
+ )
+ 
+ add_executable(
+diff --git a/main.cpp b/main.cpp
+index 7d887a1..d455312 100644
+--- a/main.cpp
++++ b/main.cpp
+@@ -15,6 +15,16 @@
+ #endif
+ #include "md5.h"
+ #include "siphash.h"
++#include "mrx_test32.h"
++#include "mrx_test64.h"
++#include "mlx_test.h"
++#include "spb_test.h"
++#include "sse_test.h"
++#include "sse_test2.h"
++#include "clm_test.h"
++#include "avx_test.h"
++#include "avx_test2.h"
++#include "aes_test.h"
+ #include <stdio.h>
+ #include <time.h>
+ #include "VERSION.h"
+@@ -468,6 +478,16 @@ HashInfo g_hashes[] =
+   { "MUM", "github.com/vnmakarov/mum-hash",
+     64, 64, 64, 0x73F6BFD7,
+     NULL, mum_hash_with_state_test },
++  { "MRXHash32", "MRX Hash 32-bit",     32,  128,  32, 0x98468248, NULL, mrx_hash_32_test2 },
++  { "MRXHash64", "MRX Hash 64-bit",     64,  256,  64, 0x80FFB9F8, NULL, mrx_hash_64_test2 },
++  { "MLXHash",   "MLX Hash 64-bit",     64,  256,  64, 0x69B66660, NULL, mlx_hash_test2 },
++  { "SPBHash",   "SPB Hash 64-bit",     64,  256,  64, 0x6AC50942, NULL, spb_hash_test2 },
++  { "SSEHash",   "SSE Hash 128-bit",   128,  512, 128, 0x0F8E10D3, NULL, sse_hash_test2 },
++  { "SSEHash2",  "SSE Hash 2 128-bit", 128,  512, 128, 0x7B0ECE67, NULL, sse_hash2_test2 },
++  { "CLMHash",   "CLM Hash 128-bit",   128, 1024, 128, 0x5C31E850, NULL, clm_hash_test2 },
++  { "AVXHash",   "AVX Hash 128-bit",   256, 2048, 128, 0x0B35C394, NULL, avx_hash_test2 },
++  { "AVXHash2",  "AVX Hash 2 128-bit", 256, 2048, 128, 0xD40344A8, NULL, avx_hash2_test2 },
++  { "AESHash",   "AES Hash 128-bit",   128, 1024, 128, 0x96326591, NULL, aes_hash_test2 },
+ };
+ int g_hashes_sizeof= sizeof(g_hashes);
+ 
