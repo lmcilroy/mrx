@@ -90,6 +90,7 @@ following performance was achieved:
 
 Here is sample benchmark output using 8KB, 1MB and 4MB message buffers.
 
+```
 $ ./mrx -b -x 8
  mrxhash32:  5685.44  6009.34  6006.41  6006.76  5989.87 -->  6009.34 MB/s (2.51 b/c)
  mrxhash64: 11621.10 11652.66 11639.22 11606.84 11614.51 --> 11652.66 MB/s (4.87 b/c)
@@ -125,6 +126,7 @@ $ ./mrx -b -x 4096
    avxhash: 40323.77 40261.59 40208.25 40202.01 40296.67 --> 40323.77 MB/s (16.84 b/c)
   avxhash2: 49299.64 49368.56 49380.14 49287.00 49257.81 --> 49380.14 MB/s (20.62 b/c)
    aeshash: 49413.29 49297.22 49316.43 49320.14 49418.86 --> 49418.86 MB/s (20.64 b/c)
+```
 
 The software in the suite has only been tested on Intel CPUs that provide
 the necessary CPU instruction sets.  Some or all of these algorithms may be
