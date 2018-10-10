@@ -199,11 +199,11 @@ benchmark(struct mrx_args * const args)
 	struct hash_func *hf;
 	unsigned char *buffer;
 	cpu_set_t cpuset;
-	double bytes;
 	double rate;
 	double best_rate;
 	double bpc;
 	double best_bpc;
+	uint64_t bytes;
 	uint64_t cycles;
 	uint64_t ts_start;
 	uint64_t iterations;
@@ -216,9 +216,10 @@ benchmark(struct mrx_args * const args)
 
 	buffer = NULL;
 
-	buffer = memalign(getpagesize(), args->block_size);
-	if (buffer == NULL) {
-		ret = errno;
+	ret = posix_memalign((void **)&buffer, getpagesize(),
+	    args->block_size);
+	if (ret != 0) {
+		ret = ENOMEM;
 		fprintf(stderr, "Failed to allocate %ld bytes: %s\n",
 		    args->st->st_size, strerror(ret));
 		goto out;
@@ -274,9 +275,9 @@ benchmark(struct mrx_args * const args)
 			} while (time < BENCH_TIME);
 
 			cycles = rdtsc() - cycles;
-			bytes = (double)args->block_size * (double)iterations;
-			rate = bytes / ((double)time / 1000);
-			bpc = bytes / (double)cycles;
+			bytes = args->block_size * iterations;
+			rate = (double)bytes / (double)(time / 1000);
+			bpc = (double)bytes / (double)cycles;
 			printf("%8.2f ", rate);
 			fflush(stdout);
 
@@ -719,9 +720,10 @@ main(int argc, char **argv)
 		}
 	}
 
-	args.buffer = memalign(getpagesize(), args.block_size);
-	if (args.buffer == NULL) {
-		ret = errno;
+	ret = posix_memalign((void **)&args.buffer, getpagesize(),
+	    args.block_size);
+	if (ret != 0) {
+		ret = ENOMEM;
 		fprintf(stderr, "Failed to allocate %d bytes: %s\n",
 		    args.block_size, strerror(ret));
 		goto out;
