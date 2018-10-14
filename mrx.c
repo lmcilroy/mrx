@@ -6,7 +6,6 @@
 #include <sys/mman.h>
 #include <time.h>
 #include <fcntl.h>
-#include <malloc.h>
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
