@@ -138,7 +138,7 @@ $ ./mrx -b -x 8192
    avxhash: 51242.55 56551.69 52739.94 54879.08 56251.50 --> 56551.69 MB/s (26.78 b/c)
   avxhash2: 67468.56 67661.88 64095.83 66327.23 66190.75 --> 67661.88 MB/s (32.04 b/c)
    aeshash: 64399.66 63600.38 64693.07 63441.17 62806.60 --> 64693.07 MB/s (30.63 b/c)
-...
+```
 
 The software in the suite has only been tested on Intel CPUs that provide
 the necessary CPU instruction sets.  Some or all of these algorithms may be
