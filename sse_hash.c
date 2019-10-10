@@ -100,7 +100,7 @@ sse_hash_update(sse_hash_state_t * const state, const void * const data,
 	}
 
 	while (llen >= state->block_size) {
-		v = (__m128i *)curr;
+		v = (__m128i_u *)curr;
 
 		x1 = round128(x1, _mm_loadu_si128(&v[0]));
 		x2 = round128(x2, _mm_loadu_si128(&v[1]));
@@ -156,7 +156,7 @@ sse_hash_end(sse_hash_state_t * const state, sse_hash_t * const hash)
 	h = round128(h, x3);
 	h = round128(h, x4);
 
-	_mm_storeu_si128((__m128i *)hash, h);
+	_mm_storeu_si128((__m128i_u *)hash, h);
 }
 
 void

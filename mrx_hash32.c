@@ -90,11 +90,12 @@ mrx_hash_32_update(mrx_hash_32_state_t * const state, const void * const data,
 	}
 
 	while (llen >= state->block_size) {
-		v = (uint32_t *)curr;
-		x1 = round32(x1, readmem32(&v[0]));
-		x2 = round32(x2, readmem32(&v[1]));
-		x3 = round32(x3, readmem32(&v[2]));
-		x4 = round32(x4, readmem32(&v[3]));
+
+		x1 = round32(x1, readmem32(curr));
+		x2 = round32(x2, readmem32(curr+4));
+		x3 = round32(x3, readmem32(curr+8));
+		x4 = round32(x4, readmem32(curr+12));
+
 		curr += state->block_size;
 		llen -= state->block_size;
 	}

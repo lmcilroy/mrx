@@ -209,13 +209,6 @@ gettime(void)
 	return ts.tv_sec * 1000000000 + ts.tv_nsec;
 }
 
-static inline unsigned long
-timediff(struct timespec ts1, struct timespec ts2)
-{
-	return (ts2.tv_sec - ts1.tv_sec) * 1000000000ULL +
-	    (ts2.tv_nsec - ts1.tv_nsec);
-}
-
 static unsigned int
 benchmark(struct mrx_args * const args)
 {

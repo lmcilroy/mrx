@@ -98,7 +98,7 @@ aes_hash_update(aes_hash_state_t * const state, const void * const data,
 	}
 
 	while (llen >= state->block_size) {
-		v = (__m128i *)curr;
+		v = (__m128i_u *)curr;
 
 		x1 = _mm_aesenc_si128(x1, _mm_loadu_si128(&v[0]));
 		x2 = _mm_aesenc_si128(x2, _mm_loadu_si128(&v[1]));
@@ -174,7 +174,7 @@ aes_hash_end(aes_hash_state_t * const state, aes_hash_t * const hash)
 	h = _mm_aesenc_si128(h, x7);
 	h = _mm_aesenc_si128(h, x8);
 
-	_mm_storeu_si128((__m128i *)hash, h);
+	_mm_storeu_si128((__m128i_u *)hash, h);
 }
 
 void

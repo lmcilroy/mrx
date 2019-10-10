@@ -100,11 +100,11 @@ mlx_hash2_update(mlx_hash2_state_t * const state, const void * const data,
 	}
 
 	while (llen >= state->block_size) {
-		v = (uint64_t *)curr;
-		x1 ^= readmem64(&v[0]);
-		x2 ^= readmem64(&v[1]);
-		x3 ^= readmem64(&v[2]);
-		x4 ^= readmem64(&v[3]);
+
+		x1 ^= readmem64(curr);
+		x2 ^= readmem64(curr+8);
+		x3 ^= readmem64(curr+16);
+		x4 ^= readmem64(curr+24);
 		mix256(&x1, &x2, &x3, &x4);
 
 		curr += state->block_size;

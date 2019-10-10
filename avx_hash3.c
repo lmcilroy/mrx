@@ -165,7 +165,7 @@ avx_hash3_update(avx_hash3_state_t * const state, const void * const data,
 	}
 
 	while (llen >= state->block_size) {
-		v = (__m256i *)curr;
+		v = (__m256i_u *)curr;
 
 		x1 = round256(x1, _mm256_loadu_si256(&v[0]));
 		x2 = round256(x2, _mm256_loadu_si256(&v[1]));
@@ -248,7 +248,7 @@ avx_hash3_end(avx_hash3_state_t * const state, avx_hash3_t * const hash)
 	h = combine256(h, x7);
 	h = combine256(h, x8);
 
-	_mm256_storeu_si256((__m256i *)hash, h);
+	_mm256_storeu_si256((__m256i_u *)hash, h);
 }
 
 void

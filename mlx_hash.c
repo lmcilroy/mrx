@@ -94,11 +94,12 @@ mlx_hash_update(mlx_hash_state_t * const state, const void * const data,
 	}
 
 	while (llen >= state->block_size) {
-		v = (uint64_t *)curr;
-		x1 = round64(x1, readmem64(&v[0]), readmem64(&v[1]));
-		x2 = round64(x2, readmem64(&v[2]), readmem64(&v[3]));
-		x3 = round64(x3, readmem64(&v[4]), readmem64(&v[5]));
-		x4 = round64(x4, readmem64(&v[6]), readmem64(&v[7]));
+
+		x1 = round64(x1, readmem64(curr),    readmem64(curr+8));
+		x2 = round64(x2, readmem64(curr+16), readmem64(curr+24));
+		x3 = round64(x3, readmem64(curr+32), readmem64(curr+40));
+		x4 = round64(x4, readmem64(curr+48), readmem64(curr+56));
+
 		curr += state->block_size;
 		llen -= state->block_size;
 	}
