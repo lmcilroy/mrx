@@ -3,12 +3,10 @@
 #include <string.h>
 #include <x86intrin.h>
 
-#include "avx_hash.h"
+#include "avx_hash3.h"
 
-static const __m128i k1 = { 0xca95ca95ca95ca95, 0xca95ca95ca95ca95 };
-
-static const __m256i m1 = { 0xca95ca95ca95ca95, 0xca95ca95ca95ca95,
-			    0xca95ca95ca95ca95, 0xca95ca95ca95ca95 };
+static const __m256i m1 = { 0xcc9e2d51db873593, 0xcc9e2d51db873593,
+			    0xcc9e2d51db873593, 0xcc9e2d51db873593 };
 
 static const __m256i s1 = { 0xc05bbd6b47c57574, 0xf83c1e9e4a934534,
 			    0xc05bbd6b47c57574, 0xf83c1e9e4a934534 };
@@ -26,44 +24,67 @@ static const __m256i s7 = { 0xac0120817de73b56, 0xa5be99de5ff769dd,
 			    0xac0120817de73b56, 0xa5be99de5ff769dd };
 static const __m256i s8 = { 0x7541811329b4609f, 0x4c4cfa866064ec93,
 			    0x7541811329b4609f, 0x4c4cfa866064ec93 };
-static inline __m128i
-mix128(const __m128i h)
-{
-	__m128i a, b, c;
 
-	a = _mm_xor_si128(h, k1);
-	b = _mm_mullo_epi16(a, k1);
-	a = _mm_alignr_epi8(a, a, 2);
-	c = _mm_mulhi_epi16(a, k1);
-	return _mm_xor_si128(b, c);
-}
-
-static inline __m128i
-round128(const __m128i h, const __m128i x)
+static inline __m256i
+rotate256(const __m256i h)
 {
-	return mix128(_mm_xor_si128(h, x));
+	__m256i a;
+
+	a = _mm256_set_epi32(6, 5, 4, 3, 2, 1, 0, 7);
+	a = _mm256_permutevar8x32_epi32(h, a);
+
+	return a;
 }
 
 static inline __m256i
 mix256(const __m256i h)
 {
-	__m256i a, b, c;
+	__m256i a, b;
 
 	a = _mm256_xor_si256(h, m1);
-	b = _mm256_mullo_epi16(a, m1);
-	a = _mm256_alignr_epi8(a, a, 2);
-	c = _mm256_mulhi_epi16(a, m1);
-	return _mm256_xor_si256(b, c);
+	b = rotate256(a);
+	a = _mm256_mul_epu32(a, b);
+
+	return a;
 }
 
 static inline __m256i
 round256(const __m256i h, const __m256i x)
 {
-	return mix256(_mm256_xor_si256(h, x));
+	__m256i a;
+
+	a = _mm256_xor_si256(h, x);
+	a = mix256(a);
+
+	return a;
+}
+
+static inline __m256i
+fmix256(const __m256i h)
+{
+	__m256i a;
+
+	a = _mm256_xor_si256(h, _mm256_srli_epi32(h, 16));
+	a = _mm256_mullo_epi32(a, m1);
+	a = _mm256_xor_si256(a, _mm256_srli_epi32(a, 16));
+
+	return a;
+}
+
+static inline __m256i
+combine256(const __m256i h, const __m256i x)
+{
+	__m256i a, m;
+
+	m = _mm256_set_epi32(3, 3, 3, 3, 3, 3, 3, 3);
+	a = _mm256_mullo_epi32(h, m);
+	a = _mm256_add_epi64(a, x);
+
+	return a;
 }
 
 void
-avx_hash_start_seed(avx_hash_state_t * const state, const void * const seed)
+avx_hash3_start_seed(avx_hash3_state_t * const state, const void * const seed)
 {
 	__m256i s;
 
@@ -82,15 +103,15 @@ avx_hash_start_seed(avx_hash_state_t * const state, const void * const seed)
 }
 
 void
-avx_hash_start(avx_hash_state_t * const state)
+avx_hash3_start(avx_hash3_state_t * const state)
 {
 	uint64_t seed[4] = { 0, 0, 0, 0 };
 
-	avx_hash_start_seed(state, &seed);
+	avx_hash3_start_seed(state, &seed);
 }
 
 void
-avx_hash_update(avx_hash_state_t * const state, const void * const data,
+avx_hash3_update(avx_hash3_state_t * const state, const void * const data,
     const size_t len)
 {
 	__m256i *v;
@@ -177,17 +198,16 @@ avx_hash_update(avx_hash_state_t * const state, const void * const data,
 static const unsigned char padding[256] = { 0x80 };
 
 void
-avx_hash_end(avx_hash_state_t * const state, avx_hash_t * const hash)
+avx_hash3_end(avx_hash3_state_t * const state, avx_hash3_t * const hash)
 {
-	__m256i hx, x1, x2, x3, x4, x5, x6, x7, x8;
-	__m128i h;
+	__m256i h, x1, x2, x3, x4, x5, x6, x7, x8;
 	uint64_t total_len;
 	uint32_t len, i;
 
 	total_len = state->total_len;
 	len = (state->count < 248) ? 248 - state->count : 504 - state->count;
-	avx_hash_update(state, padding, len);
-	avx_hash_update(state, &total_len, 8);
+	avx_hash3_update(state, padding, len);
+	avx_hash3_update(state, &total_len, 8);
 
 	x1 = state->x1;
 	x2 = state->x2;
@@ -198,7 +218,7 @@ avx_hash_end(avx_hash_state_t * const state, avx_hash_t * const hash)
 	x7 = state->x7;
 	x8 = state->x8;
 
-	for (i = 0; i < 24; i++) {
+	for (i = 0; i < 8; i++) {
 		x1 = mix256(x1);
 		x2 = mix256(x2);
 		x3 = mix256(x3);
@@ -209,39 +229,43 @@ avx_hash_end(avx_hash_state_t * const state, avx_hash_t * const hash)
 		x8 = mix256(x8);
 	}
 
-	hx = _mm256_setzero_si256();
-	hx = round256(hx, x1);
-	hx = round256(hx, x2);
-	hx = round256(hx, x3);
-	hx = round256(hx, x4);
-	hx = round256(hx, x5);
-	hx = round256(hx, x6);
-	hx = round256(hx, x7);
-	hx = round256(hx, x8);
+	x1 = fmix256(x1);
+	x2 = fmix256(x2);
+	x3 = fmix256(x3);
+	x4 = fmix256(x4);
+	x5 = fmix256(x5);
+	x6 = fmix256(x6);
+	x7 = fmix256(x7);
+	x8 = fmix256(x8);
 
-	h = _mm_setzero_si128();
-	h = round128(h, _mm256_extractf128_si256(hx, 0));
-	h = round128(h, _mm256_extractf128_si256(hx, 1));
-	h = mix128(h);
+	h = _mm256_setzero_si256();
+	h = combine256(h, x1);
+	h = combine256(h, x2);
+	h = combine256(h, x3);
+	h = combine256(h, x4);
+	h = combine256(h, x5);
+	h = combine256(h, x6);
+	h = combine256(h, x7);
+	h = combine256(h, x8);
 
-	_mm_storeu_si128((__m128i *)hash, h);
+	_mm256_storeu_si256((__m256i *)hash, h);
 }
 
 void
-avx_hash_seed(const void * const data, const size_t len,
-    const void * const seed, avx_hash_t * const hash)
+avx_hash3_seed(const void * const data, const size_t len,
+    const void * const seed, avx_hash3_t * const hash)
 {
-	avx_hash_state_t avx_hash;
+	avx_hash3_state_t avx_hash;
 
-	avx_hash_start_seed(&avx_hash, seed);
-	avx_hash_update(&avx_hash, data, len);
-	avx_hash_end(&avx_hash, hash);
+	avx_hash3_start_seed(&avx_hash, seed);
+	avx_hash3_update(&avx_hash, data, len);
+	avx_hash3_end(&avx_hash, hash);
 }
 
 void
-avx_hash(const void * const data, const size_t len, avx_hash_t * const hash)
+avx_hash3(const void * const data, const size_t len, avx_hash3_t * const hash)
 {
 	uint64_t seed[4] = { 0, 0, 0, 0 };
 
-	avx_hash_seed(data, len, &seed, hash);
+	avx_hash3_seed(data, len, &seed, hash);
 }

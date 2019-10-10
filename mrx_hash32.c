@@ -31,7 +31,7 @@ final32(const uint32_t h)
 }
 
 void
-mrx_hash_32_start_seed(mrx_state_32_t * const state, const uint32_t seed)
+mrx_hash_32_start_seed(mrx_hash_32_state_t * const state, const uint32_t seed)
 {
 	state->x1 = c2 ^ seed;
 	state->x2 = c3 ^ seed;
@@ -43,13 +43,13 @@ mrx_hash_32_start_seed(mrx_state_32_t * const state, const uint32_t seed)
 }
 
 void
-mrx_hash_32_start(mrx_state_32_t * const state)
+mrx_hash_32_start(mrx_hash_32_state_t * const state)
 {
 	mrx_hash_32_start_seed(state, 0);
 }
 
 void
-mrx_hash_32_update(mrx_state_32_t * const state, const void * const data,
+mrx_hash_32_update(mrx_hash_32_state_t * const state, const void * const data,
     const size_t len)
 {
 	const unsigned char *curr = data;
@@ -113,7 +113,7 @@ mrx_hash_32_update(mrx_state_32_t * const state, const void * const data,
 static const unsigned char padding[256] = { 0x80 };
 
 void
-mrx_hash_32_end(mrx_state_32_t * const state, void * const hash)
+mrx_hash_32_end(mrx_hash_32_state_t * const state, mrx_hash_32_t * const hash)
 {
 	uint32_t h, x1, x2, x3, x4;
 	uint32_t total_len;
@@ -140,9 +140,9 @@ mrx_hash_32_end(mrx_state_32_t * const state, void * const hash)
 
 void
 mrx_hash_32_seed(const void * const data, const size_t len,
-    const uint32_t seed, void * const hash)
+    const uint32_t seed, mrx_hash_32_t * const hash)
 {
-	mrx_state_32_t state;
+	mrx_hash_32_state_t state;
 
 	mrx_hash_32_start_seed(&state, seed);
 	mrx_hash_32_update(&state, data, len);
@@ -151,7 +151,7 @@ mrx_hash_32_seed(const void * const data, const size_t len,
 
 void
 mrx_hash_32(const void * const data, const size_t len,
-    void * const hash)
+    mrx_hash_32_t * const hash)
 {
 	mrx_hash_32_seed(data, len, 0, hash);
 }

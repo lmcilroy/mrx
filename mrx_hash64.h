@@ -2,7 +2,7 @@
 extern "C" {
 #endif
 
-struct mrx_state_64 {
+struct mrx_hash_64_state {
 	union {
 		uint64_t ints[4];
 		uint8_t chars[32];
@@ -16,20 +16,23 @@ struct mrx_state_64 {
 	uint64_t x4;
 };
 
-typedef struct mrx_state_64 mrx_state_64_t;
+typedef struct mrx_hash_64_state mrx_hash_64_state_t;
+typedef uint64_t mrx_hash_64_t;
 
 /* 64-bit streaming interfaces */
-void mrx_hash_64_start(mrx_state_64_t * const state);
-void mrx_hash_64_start_seed(mrx_state_64_t * const state, const uint64_t seed);
-void mrx_hash_64_update(mrx_state_64_t * const state, const void * const data,
-    const size_t len);
-void mrx_hash_64_end(mrx_state_64_t * const state, void * const hash);
+void mrx_hash_64_start(mrx_hash_64_state_t * const state);
+void mrx_hash_64_start_seed(mrx_hash_64_state_t * const state,
+    const uint64_t seed);
+void mrx_hash_64_update(mrx_hash_64_state_t * const state,
+    const void * const data, const size_t len);
+void mrx_hash_64_end(mrx_hash_64_state_t * const state,
+    mrx_hash_64_t * const hash);
 
 /* 64-bit convenience routines for single shot hashing */
 void mrx_hash_64_seed(const void * const data, const size_t len,
-    const uint64_t seed, void * const hash);
+    const uint64_t seed, mrx_hash_64_t * const hash);
 void mrx_hash_64(const void * const data, const size_t len,
-    void * const hash);
+    mrx_hash_64_t * const hash);
 
 #ifdef __cplusplus
 }

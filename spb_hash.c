@@ -569,7 +569,7 @@ round64(const uint64_t h, const uint64_t x)
 }
 
 void
-spb_hash_start_seed(spb_state_t * const state, const uint64_t seed)
+spb_hash_start_seed(spb_hash_state_t * const state, const uint64_t seed)
 {
 	state->x1 = s1 ^ seed;
 	state->x2 = s2 ^ seed;
@@ -581,13 +581,13 @@ spb_hash_start_seed(spb_state_t * const state, const uint64_t seed)
 }
 
 void
-spb_hash_start(spb_state_t * const state)
+spb_hash_start(spb_hash_state_t * const state)
 {
 	spb_hash_start_seed(state, 0);
 }
 
 void
-spb_hash_update(spb_state_t * const state, const void * const data,
+spb_hash_update(spb_hash_state_t * const state, const void * const data,
     const size_t len)
 {
 	const unsigned char *curr = data;
@@ -654,7 +654,7 @@ spb_hash_update(spb_state_t * const state, const void * const data,
 static const unsigned char padding[256] = { 0x80 };
 
 void
-spb_hash_end(spb_state_t * const state, void * const hash)
+spb_hash_end(spb_hash_state_t * const state, spb_hash_t * const hash)
 {
 	uint64_t h, x1, x2, x3, x4;
 	uint64_t total_len;
@@ -681,9 +681,9 @@ spb_hash_end(spb_state_t * const state, void * const hash)
 
 void
 spb_hash_seed(const void * const data, const size_t len,
-    const uint64_t seed, void * const hash)
+    const uint64_t seed, spb_hash_t * const hash)
 {
-	spb_state_t state;
+	spb_hash_state_t state;
 
 	spb_hash_start_seed(&state, seed);
 	spb_hash_update(&state, data, len);
@@ -691,7 +691,7 @@ spb_hash_seed(const void * const data, const size_t len,
 }
 
 void
-spb_hash(const void * const data, const size_t len, void * const hash)
+spb_hash(const void * const data, const size_t len, spb_hash_t * const hash)
 {
 	spb_hash_seed(data, len, 0, hash);
 }

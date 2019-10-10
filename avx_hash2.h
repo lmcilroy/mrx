@@ -22,7 +22,12 @@ struct avx_hash2_state {
 	__m256i x8;
 };
 
+struct avx_hash2 {
+	uint64_t h[2];
+};
+
 typedef struct avx_hash2_state avx_hash2_state_t;
+typedef struct avx_hash2 avx_hash2_t;
 
 /* Streaming interfaces */
 void avx_hash2_start(avx_hash2_state_t * const state);
@@ -30,12 +35,13 @@ void avx_hash2_start_seed(avx_hash2_state_t * const state,
     const void * const seed);
 void avx_hash2_update(avx_hash2_state_t * const state, const void * const data,
     const size_t len);
-void avx_hash2_end(avx_hash2_state_t * const state, void * const hash);
+void avx_hash2_end(avx_hash2_state_t * const state, avx_hash2_t * const hash);
 
 /* Convenience routines for single shot hashing */
 void avx_hash2_seed(const void * const data, const size_t len,
-    const void * const seed, void * const hash);
-void avx_hash2(const void * const data, const size_t len, void * const hash);
+    const void * const seed, avx_hash2_t * const hash);
+void avx_hash2(const void * const data, const size_t len,
+    avx_hash2_t * const hash);
 
 #ifdef __cplusplus
 }

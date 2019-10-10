@@ -2,7 +2,7 @@
 extern "C" {
 #endif
 
-struct mrx_state_32 {
+struct mrx_hash_32_state {
 	union {
 		uint32_t ints[4];
 		uint8_t chars[16];
@@ -16,20 +16,23 @@ struct mrx_state_32 {
 	uint32_t x4;
 };
 
-typedef struct mrx_state_32 mrx_state_32_t;
+typedef struct mrx_hash_32_state mrx_hash_32_state_t;
+typedef uint32_t mrx_hash_32_t;
 
 /* 32-bit streaming interfaces */
-void mrx_hash_32_start(mrx_state_32_t * const state);
-void mrx_hash_32_start_seed(mrx_state_32_t * const state, const uint32_t seed);
-void mrx_hash_32_update(mrx_state_32_t * const state, const void * const data,
-    const size_t len);
-void mrx_hash_32_end(mrx_state_32_t * const state, void * const hash);
+void mrx_hash_32_start(mrx_hash_32_state_t * const state);
+void mrx_hash_32_start_seed(mrx_hash_32_state_t * const state,
+    const uint32_t seed);
+void mrx_hash_32_update(mrx_hash_32_state_t * const state,
+    const void * const data, const size_t len);
+void mrx_hash_32_end(mrx_hash_32_state_t * const state,
+    mrx_hash_32_t * const hash);
 
 /* 32-bit convenience routines for single shot hashing */
 void mrx_hash_32_seed(const void * const data, const size_t len,
-    const uint32_t seed, void * const hash);
+    const uint32_t seed, mrx_hash_32_t * const hash);
 void mrx_hash_32(const void * const data, const size_t len,
-    void * const hash);
+    mrx_hash_32_t * const hash);
 
 #ifdef __cplusplus
 }

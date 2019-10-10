@@ -8,7 +8,7 @@ sse_hash2_test(const void *key, int len, uint32_t seed, void *out)
 {
 	uint32_t s[4] = { seed, seed, seed, seed };
 
-	sse_hash2_seed(key, len, &s, out);
+	sse_hash2_seed(key, len, s, out);
 }
 
 void

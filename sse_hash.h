@@ -18,7 +18,12 @@ struct sse_hash_state {
 	__m128i x4;
 };
 
+struct sse_hash {
+	uint64_t h[2];
+};
+
 typedef struct sse_hash_state sse_hash_state_t;
+typedef struct sse_hash sse_hash_t;
 
 /* Streaming interfaces */
 void sse_hash_start(sse_hash_state_t * const state);
@@ -26,12 +31,13 @@ void sse_hash_start_seed(sse_hash_state_t * const state,
     const void * const seed);
 void sse_hash_update(sse_hash_state_t * const state, const void * const data,
     const size_t len);
-void sse_hash_end(sse_hash_state_t * const state, void * const hash);
+void sse_hash_end(sse_hash_state_t * const state, sse_hash_t * const hash);
 
 /* Convenience routines for single shot hashing */
 void sse_hash_seed(const void * const data, const size_t len,
-    const void * const seed, void * const hash);
-void sse_hash(const void * const data, const size_t len, void * const hash);
+    const void * const seed, sse_hash_t * const hash);
+void sse_hash(const void * const data, const size_t len,
+    sse_hash_t * const hash);
 
 #ifdef __cplusplus
 }

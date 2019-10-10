@@ -22,19 +22,26 @@ struct aes_hash_state {
 	__m128i x8;
 };
 
+struct aes_hash {
+	uint64_t h[2];
+};
+
 typedef struct aes_hash_state aes_hash_state_t;
+typedef struct aes_hash aes_hash_t;
 
 /* Streaming interfaces */
 void aes_hash_start(aes_hash_state_t * const state);
-void aes_hash_start_seed(aes_hash_state_t * const state, const void * const seed);
+void aes_hash_start_seed(aes_hash_state_t * const state,
+    const void * const seed);
 void aes_hash_update(aes_hash_state_t * const state, const void * const data,
     const size_t len);
-void aes_hash_end(aes_hash_state_t * const state, void * const hash);
+void aes_hash_end(aes_hash_state_t * const state, aes_hash_t * const hash);
 
 /* Convenience routines for single shot hashing */
 void aes_hash_seed(const void * const data, const size_t len,
-    const void * const seed, void * const hash);
-void aes_hash(const void * const data, const size_t len, void * const hash);
+    const void * const seed, aes_hash_t * const hash);
+void aes_hash(const void * const data, const size_t len,
+    aes_hash_t * const hash);
 
 #ifdef __cplusplus
 }

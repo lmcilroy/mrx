@@ -131,7 +131,7 @@ aes_hash_update(aes_hash_state_t * const state, const void * const data,
 static const unsigned char padding[256] = { 0x80 };
 
 void
-aes_hash_end(aes_hash_state_t * const state, void * const hash)
+aes_hash_end(aes_hash_state_t * const state, aes_hash_t * const hash)
 {
 	__m128i h, x1, x2, x3, x4, x5, x6, x7, x8;
 	uint64_t total_len;
@@ -179,7 +179,7 @@ aes_hash_end(aes_hash_state_t * const state, void * const hash)
 
 void
 aes_hash_seed(const void * const data, const size_t len,
-    const void * const seed, void * const hash)
+    const void * const seed, aes_hash_t * const hash)
 {
 	aes_hash_state_t aes_hash;
 
@@ -189,7 +189,7 @@ aes_hash_seed(const void * const data, const size_t len,
 }
 
 void
-aes_hash(const void * const data, const size_t len, void * const hash)
+aes_hash(const void * const data, const size_t len, aes_hash_t * const hash)
 {
 	uint64_t seed[2] = { 0, 0 };
 

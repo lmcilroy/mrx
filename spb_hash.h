@@ -2,7 +2,7 @@
 extern "C" {
 #endif
 
-struct spb_state {
+struct spb_hash_state {
 	union {
 		uint64_t ints[4];
 		uint8_t chars[32];
@@ -16,20 +16,21 @@ struct spb_state {
 	uint64_t x4;
 };
 
-typedef struct spb_state spb_state_t;
+typedef struct spb_hash_state spb_hash_state_t;
+typedef uint64_t spb_hash_t;
 
 /* 64-bit streaming interfaces */
-void spb_hash_start(spb_state_t * const state);
-void spb_hash_start_seed(spb_state_t * const state, const uint64_t seed);
-void spb_hash_update(spb_state_t * const state, const void * const data,
+void spb_hash_start(spb_hash_state_t * const state);
+void spb_hash_start_seed(spb_hash_state_t * const state, const uint64_t seed);
+void spb_hash_update(spb_hash_state_t * const state, const void * const data,
     const size_t len);
-void spb_hash_end(spb_state_t * const state, void * const hash);
+void spb_hash_end(spb_hash_state_t * const state, spb_hash_t * const hash);
 
 /* 64-bit convenience routines for single shot hashing */
 void spb_hash_seed(const void * const data, const size_t len,
-    const uint64_t seed, void * const hash);
+    const uint64_t seed, spb_hash_t * const hash);
 void spb_hash(const void * const data, const size_t len,
-    void * const hash);
+    spb_hash_t * const hash);
 
 #ifdef __cplusplus
 }

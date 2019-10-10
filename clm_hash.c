@@ -163,7 +163,7 @@ clm_hash_update(clm_hash_state_t * const state, const void * const data,
 static const unsigned char padding[256] = { 0x80 };
 
 void
-clm_hash_end(clm_hash_state_t * const state, void * const hash)
+clm_hash_end(clm_hash_state_t * const state, clm_hash_t * const hash)
 {
 	__m128i h, x1, x2, x3, x4, x5, x6, x7, x8;
 	uint64_t total_len;
@@ -200,7 +200,7 @@ clm_hash_end(clm_hash_state_t * const state, void * const hash)
 
 void
 clm_hash_seed(const void * const data, const size_t len,
-    const void * const seed, void * const hash)
+    const void * const seed, clm_hash_t * const hash)
 {
 	clm_hash_state_t clm_hash;
 
@@ -210,7 +210,7 @@ clm_hash_seed(const void * const data, const size_t len,
 }
 
 void
-clm_hash(const void * const data, const size_t len, void * const hash)
+clm_hash(const void * const data, const size_t len, clm_hash_t * const hash)
 {
 	uint64_t seed[2] = { 0, 0 };
 

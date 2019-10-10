@@ -201,7 +201,7 @@ avx_hash2_update(avx_hash2_state_t * const state, const void * const data,
 static const unsigned char padding[256] = { 0x80 };
 
 void
-avx_hash2_end(avx_hash2_state_t * const state, void * const hash)
+avx_hash2_end(avx_hash2_state_t * const state, avx_hash2_t * const hash)
 {
 	__m256i hx, x1, x2, x3, x4, x5, x6, x7, x8;
 	__m128i h;
@@ -265,7 +265,7 @@ avx_hash2_end(avx_hash2_state_t * const state, void * const hash)
 
 void
 avx_hash2_seed(const void * const data, const size_t len,
-    const void * const seed, void * const hash)
+    const void * const seed, avx_hash2_t * const hash)
 {
 	avx_hash2_state_t avx_hash;
 
@@ -275,7 +275,7 @@ avx_hash2_seed(const void * const data, const size_t len,
 }
 
 void
-avx_hash2(const void * const data, const size_t len, void * const hash)
+avx_hash2(const void * const data, const size_t len, avx_hash2_t * const hash)
 {
 	uint64_t seed[4] = { 0, 0, 0, 0 };
 

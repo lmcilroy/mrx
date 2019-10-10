@@ -20,19 +20,21 @@
 #include "mrx_hash32.h"
 #include "mrx_hash64.h"
 #include "mlx_hash.h"
+#include "mlx_hash2.h"
 #include "spb_hash.h"
 #include "sse_hash.h"
 #include "sse_hash2.h"
 #include "clm_hash.h"
 #include "avx_hash.h"
 #include "avx_hash2.h"
+#include "avx_hash3.h"
 #include "aes_hash.h"
 
 #define BLOCK_SIZE	(1 << 20)
 #define false		0
 #define true		1
 
-#define HASH_FUNCS	10
+#define HASH_FUNCS	12
 
 typedef void (*hf_single)(const void * const data, const size_t len,
     void * const hash);
@@ -51,52 +53,74 @@ struct hash_func {
 };
 
 struct hash_func hash_funcs[HASH_FUNCS] = {
-	{ "mrxhash32",	 4,
+	{ "mrxhash32",
+	    sizeof(mrx_hash_32_t),
 	    (hf_single)mrx_hash_32,
 	    (hf_start)mrx_hash_32_start,
 	    (hf_update)mrx_hash_32_update,
 	    (hf_end)mrx_hash_32_end },
-	{ "mrxhash64",	 8,
+	{ "mrxhash64",
+	    sizeof(mrx_hash_64_t),
 	    (hf_single)mrx_hash_64,
 	    (hf_start)mrx_hash_64_start,
 	    (hf_update)mrx_hash_64_update,
 	    (hf_end)mrx_hash_64_end },
-	{ "mlxhash",	 8,
+	{ "mlxhash",
+	    sizeof(mlx_hash_t),
 	    (hf_single)mlx_hash,
 	    (hf_start)mlx_hash_start,
 	    (hf_update)mlx_hash_update,
 	    (hf_end)mlx_hash_end },
-	{ "spbhash",	 8,
+	{ "mlxhash2",
+	    sizeof(mlx_hash2_t),
+	    (hf_single)mlx_hash2,
+	    (hf_start)mlx_hash2_start,
+	    (hf_update)mlx_hash2_update,
+	    (hf_end)mlx_hash2_end },
+	{ "spbhash",
+	    sizeof(spb_hash_t),
 	    (hf_single)spb_hash,
 	    (hf_start)spb_hash_start,
 	    (hf_update)spb_hash_update,
 	    (hf_end)spb_hash_end },
-	{ "ssehash",	16,
+	{ "ssehash",
+	    sizeof(sse_hash_t),
 	    (hf_single)sse_hash,
 	    (hf_start)sse_hash_start,
 	    (hf_update)sse_hash_update,
 	    (hf_end)sse_hash_end },
-	{ "ssehash2",	16,
+	{ "ssehash2",
+	    sizeof(sse_hash2_t),
 	    (hf_single)sse_hash2,
 	    (hf_start)sse_hash2_start,
 	    (hf_update)sse_hash2_update,
 	    (hf_end)sse_hash2_end },
-	{ "clmhash",	16,
+	{ "clmhash",
+	    sizeof(clm_hash_t),
 	    (hf_single)clm_hash,
 	    (hf_start)clm_hash_start,
 	    (hf_update)clm_hash_update,
 	    (hf_end)clm_hash_end },
-	{ "avxhash",	16,
+	{ "avxhash",
+	    sizeof(avx_hash_t),
 	    (hf_single)avx_hash,
 	    (hf_start)avx_hash_start,
 	    (hf_update)avx_hash_update,
 	    (hf_end)avx_hash_end },
-	{ "avxhash2",	16,
+	{ "avxhash2",
+	    sizeof(avx_hash2_t),
 	    (hf_single)avx_hash2,
 	    (hf_start)avx_hash2_start,
 	    (hf_update)avx_hash2_update,
 	    (hf_end)avx_hash2_end },
-	{ "aeshash",	16,
+	{ "avxhash3",
+	    sizeof(avx_hash3_t),
+	    (hf_single)avx_hash3,
+	    (hf_start)avx_hash3_start,
+	    (hf_update)avx_hash3_update,
+	    (hf_end)avx_hash3_end },
+	{ "aeshash",
+	    sizeof(aes_hash_t),
 	    (hf_single)aes_hash,
 	    (hf_start)aes_hash_start,
 	    (hf_update)aes_hash_update,
@@ -113,7 +137,7 @@ struct mrx_args {
 	uint32_t verbose;
 	uint32_t hash_type;
 	uint32_t check;
-	uint64_t hash[2];
+	uint64_t hash[4];
 };
 
 static void
@@ -132,7 +156,7 @@ usage(void)
 
 	printf("\nhash types:\n");
 	for (i = 0; i < HASH_FUNCS; i++)
-		printf("	%s (%d)\n",
+		printf("	%s (%d-bit)\n",
 		    hash_funcs[i].hash_name, hash_funcs[i].hash_size * NBBY);
 }
 
@@ -324,16 +348,18 @@ process_data(const int fd, struct mrx_args * const args)
 	struct hash_func *hf;
 	size_t size;
 	union {
-		avx_hash_state_t avx_state;
-		avx_hash2_state_t avx_state2;
-		clm_hash_state_t clm_state;
-		sse_hash2_state_t sse_state2;
-		sse_hash_state_t sse_state;
-		aes_hash_state_t aes_state;
-		spb_state_t spb_state;
-		mlx_state_t mlx_state;
-		mrx_state_64_t mrx_state64;
-		mrx_state_32_t mrx_state32;
+		mrx_hash_32_state_t mrx_hash_32_state;
+		mrx_hash_64_state_t mrx_hash_64_state;
+		mlx_hash_state_t mlx_hash_state;
+		mlx_hash2_state_t mlx_hash2_state;
+		spb_hash_state_t spb_hash_state;
+		sse_hash_state_t sse_hash_state;
+		sse_hash2_state_t sse_hash2_state;
+		clm_hash_state_t clm_hash_state;
+		avx_hash_state_t avx_hash_state;
+		avx_hash2_state_t avx_hash2_state;
+		avx_hash3_state_t avx_hash3_state;
+		aes_hash_state_t aes_hash_state;
 	} state;
 	unsigned int ret;
 

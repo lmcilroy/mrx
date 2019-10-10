@@ -34,7 +34,7 @@ final64(const uint64_t h)
 }
 
 void
-mlx_hash_start_seed(mlx_state_t * const state, const uint64_t seed)
+mlx_hash_start_seed(mlx_hash_state_t * const state, const uint64_t seed)
 {
 	state->x1 = k2 ^ seed;
 	state->x2 = k3 ^ seed;
@@ -46,13 +46,13 @@ mlx_hash_start_seed(mlx_state_t * const state, const uint64_t seed)
 }
 
 void
-mlx_hash_start(mlx_state_t * const state)
+mlx_hash_start(mlx_hash_state_t * const state)
 {
 	mlx_hash_start_seed(state, 0);
 }
 
 void
-mlx_hash_update(mlx_state_t * const state, const void * const data,
+mlx_hash_update(mlx_hash_state_t * const state, const void * const data,
     const size_t len)
 {
 	const unsigned char *curr = data;
@@ -117,7 +117,7 @@ mlx_hash_update(mlx_state_t * const state, const void * const data,
 static const unsigned char padding[256] = { 0x80 };
 
 void
-mlx_hash_end(mlx_state_t * const state, void * const hash)
+mlx_hash_end(mlx_hash_state_t * const state, mlx_hash_t * const hash)
 {
 	uint64_t h, x1, x2, x3, x4;
 	uint64_t total_len;
@@ -142,9 +142,9 @@ mlx_hash_end(mlx_state_t * const state, void * const hash)
 
 void
 mlx_hash_seed(const void * const data, const size_t len,
-    const uint64_t seed, void * const hash)
+    const uint64_t seed, mlx_hash_t * const hash)
 {
-	mlx_state_t state;
+	mlx_hash_state_t state;
 
 	mlx_hash_start_seed(&state, seed);
 	mlx_hash_update(&state, data, len);
@@ -152,7 +152,7 @@ mlx_hash_seed(const void * const data, const size_t len,
 }
 
 void
-mlx_hash(const void * const data, const size_t len, void * const hash)
+mlx_hash(const void * const data, const size_t len, mlx_hash_t * const hash)
 {
 	mlx_hash_seed(data, len, 0, hash);
 }
