@@ -58,6 +58,10 @@ CLMHash (128-bit)
     multiplication.  Very similar to MLXHash but this instruction is a lot
     faster.
 
+CLMHash2 (1024-bit)
+  - Similar to CLMHash but mixes across the full state to provide a 1024-bit
+    hash.
+
 AVXHash (128-bit)
   - Similar to SSEHash but doubles the register width for greater parallelism.
 
@@ -86,16 +90,17 @@ the following performance was achieved:
 |-----------|------------|-------------|
 | MRXHash32 |     8.1    |     3.8     |
 | MRXHash64 |    16.3    |     7.7     |
-| MLXHash   |    27.9    |    13.2     |
+| MLXHash   |    29.2    |    13.8     |
 | MLXHash2  |    22.4    |    10.6     |
 | SPBHash   |     0.6    |     0.3     |
-| SSEHash   |    21.8    |    10.3     |
-| SSEHash2  |    22.8    |    10.8     |
-| CLMHash   |    47.2    |    22.3     |
-| AVXHash   |    56.5    |    26.7     |
-| AVXHash2  |    66.9    |    32.0     |
-| AVXHash3  |    70.4    |    33.4     |
-| AESHash   |    64.6    |    30.6     |
+| SSEHash   |    22.7    |    10.8     |
+| SSEHash2  |    25.5    |    12.1     |
+| CLMHash   |    49.9    |    23.6     |
+| CLMHash2  |    45.3    |    21.5     |
+| AVXHash   |    57.8    |    27.4     |
+| AVXHash2  |    68.9    |    32.6     |
+| AVXHash3  |    73.3    |    34.7     |
+| AESHash   |    66.4    |    31.4     |
 
 The software in the suite has only been tested on Intel CPUs that provide
 the necessary CPU instruction sets.  Some or all of these algorithms may be

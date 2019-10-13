@@ -25,6 +25,7 @@
 #include "sse_hash.h"
 #include "sse_hash2.h"
 #include "clm_hash.h"
+#include "clm_hash2.h"
 #include "avx_hash.h"
 #include "avx_hash2.h"
 #include "avx_hash3.h"
@@ -34,7 +35,7 @@
 #define false		0
 #define true		1
 
-#define HASH_FUNCS	12
+#define HASH_FUNCS	13
 
 typedef void (*hf_single)(const void * const data, const size_t len,
     void * const hash);
@@ -101,6 +102,12 @@ struct hash_func hash_funcs[HASH_FUNCS] = {
 	    (hf_start)clm_hash_start,
 	    (hf_update)clm_hash_update,
 	    (hf_end)clm_hash_end },
+	{ "clmhash2",
+	    sizeof(clm_hash2_t),
+	    (hf_single)clm_hash2,
+	    (hf_start)clm_hash2_start,
+	    (hf_update)clm_hash2_update,
+	    (hf_end)clm_hash2_end },
 	{ "avxhash",
 	    sizeof(avx_hash_t),
 	    (hf_single)avx_hash,
@@ -137,7 +144,7 @@ struct mrx_args {
 	uint32_t verbose;
 	uint32_t hash_type;
 	uint32_t check;
-	uint64_t hash[4];
+	uint64_t hash[16];
 };
 
 static void
@@ -349,6 +356,7 @@ process_data(const int fd, struct mrx_args * const args)
 		sse_hash_state_t sse_hash_state;
 		sse_hash2_state_t sse_hash2_state;
 		clm_hash_state_t clm_hash_state;
+		clm_hash2_state_t clm_hash2_state;
 		avx_hash_state_t avx_hash_state;
 		avx_hash2_state_t avx_hash2_state;
 		avx_hash3_state_t avx_hash3_state;
