@@ -144,6 +144,7 @@ struct mrx_args {
 	uint32_t verbose;
 	uint32_t hash_type;
 	uint32_t check;
+	uint32_t dieharder;
 	uint64_t hash[16];
 };
 
@@ -153,8 +154,9 @@ usage(void)
 	uint32_t i;
 
 	printf("usage: mrx [options] <files...>\n");
-	printf("	-c			check mode\n");
 	printf("	-b			benchmark mode\n");
+	printf("	-c			check mode\n");
+	printf("	-d			dieharder mode\n");
 	printf("	-h			this help message\n");
 	printf("	-r			recurse into directories\n");
 	printf("	-t <hash type>		hash algorithm type\n");
@@ -318,6 +320,44 @@ benchmark(struct mrx_args * const args)
 	if (buffer != NULL)
 		free(buffer);
 
+	return ret;
+}
+
+static unsigned int
+dieharder(struct mrx_args * const args)
+{
+	struct hash_func *hf;
+	int ret = 0;
+	int fd;
+
+	if (args->hash_type == HASH_FUNCS) {
+		ret = EINVAL;
+		fprintf(stderr, "Need a hash type.\n");
+		goto out;
+	}
+
+	fd = STDOUT_FILENO;
+	if (isatty(fd)) {
+		ret = EIO;
+		fprintf(stderr, "Will not write to terminal\n");
+		goto out;
+	}
+
+	hf = &hash_funcs[args->hash_type];
+	memset(args->hash, 0, hf->hash_size);
+
+	for (;;) {
+		hf->hash_single(args->hash, hf->hash_size, args->hash);
+		ret = write(fd, args->hash, hf->hash_size);
+		if (ret < 0) {
+			ret = errno;
+			fprintf(stderr, "Failed to write hash to stdout\n");
+			goto out;
+		}
+
+	}
+
+ out:
 	return ret;
 }
 
@@ -703,13 +743,16 @@ main(int argc, char **argv)
 	args.hash_type = HASH_FUNCS;
 	args.check = false;
 
-	while ((c = getopt(argc, argv, "bchrt:vx:")) != EOF) {
+	while ((c = getopt(argc, argv, "bcdhrt:vx:")) != EOF) {
 		switch (c) {
 		case 'b':
 			args.benchmark = true;
 			break;
 		case 'c':
 			args.check = true;
+			break;
+		case 'd':
+			args.dieharder = true;
 			break;
 		case 'r':
 			args.recurse = true;
@@ -744,6 +787,11 @@ main(int argc, char **argv)
 			exit(1);
 			break;
 		}
+	}
+
+	if (args.dieharder == true) {
+		ret = dieharder(&args);
+		goto out;
 	}
 
 	ret = posix_memalign((void **)&args.buffer, getpagesize(),
