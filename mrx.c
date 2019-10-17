@@ -750,6 +750,7 @@ main(int argc, char **argv)
 	args.block_size = BLOCK_SIZE;
 	args.hash_type = HASH_FUNCS;
 	args.check = false;
+	args.dieharder = false;
 
 	while ((c = getopt(argc, argv, "bcdhrt:vx:")) != EOF) {
 		switch (c) {
