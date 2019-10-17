@@ -11,6 +11,7 @@ struct clm_hash_state {
 	} buf;
 	uint32_t count;
 	uint32_t block_size;
+	uint64_t total_len;
 	__m128i x1;
 	__m128i x2;
 	__m128i x3;
@@ -19,7 +20,6 @@ struct clm_hash_state {
 	__m128i x6;
 	__m128i x7;
 	__m128i x8;
-	size_t total_len;
 };
 
 struct clm_hash {
