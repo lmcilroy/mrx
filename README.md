@@ -78,6 +78,10 @@ AESHash (128-bit)
     calls as more input is processed.  The final mix needs to do a few more
     cycles to ensure mixing is complete.
 
+AESHash2 (1024-bit)
+  - Similar to AESHash but also uses the aesenc instruction to mix across the
+    full state to provide a 1024-bit hash.
+
 Included in this software suite is a command line tool 'mrx' that can use
 any of the above algorithms to generate hashes for a collection of files
 and also verify hashes to check integrity.  The command also includes a
@@ -101,6 +105,7 @@ the following performance was achieved:
 | AVXHash2  |    68.9    |    32.6     |
 | AVXHash3  |    73.3    |    34.7     |
 | AESHash   |    66.4    |    31.4     |
+| AESHash2  |    33.1    |    15.7     |
 
 The software in the suite has only been tested on Intel CPUs that provide
 the necessary CPU instruction sets.  Some or all of these algorithms may be

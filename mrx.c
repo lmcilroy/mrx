@@ -30,12 +30,13 @@
 #include "avx_hash2.h"
 #include "avx_hash3.h"
 #include "aes_hash.h"
+#include "aes_hash2.h"
 
 #define BLOCK_SIZE	(1 << 20)
 #define false		0
 #define true		1
 
-#define HASH_FUNCS	13
+#define HASH_FUNCS	14
 
 typedef void (*hf_single)(const void * const data, const size_t len,
     void * const hash);
@@ -132,6 +133,12 @@ struct hash_func hash_funcs[HASH_FUNCS] = {
 	    (hf_start)aes_hash_start,
 	    (hf_update)aes_hash_update,
 	    (hf_end)aes_hash_end },
+	{ "aeshash2",
+	    sizeof(aes_hash2_t),
+	    (hf_single)aes_hash2,
+	    (hf_start)aes_hash2_start,
+	    (hf_update)aes_hash2_update,
+	    (hf_end)aes_hash2_end },
 };
 
 struct mrx_args {
@@ -401,6 +408,7 @@ process_data(const int fd, struct mrx_args * const args)
 		avx_hash2_state_t avx_hash2_state;
 		avx_hash3_state_t avx_hash3_state;
 		aes_hash_state_t aes_hash_state;
+		aes_hash2_state_t aes_hash2_state;
 	} state;
 	unsigned int ret;
 

@@ -1,8 +1,8 @@
 diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
-index 3aaec87..c48214b 100644
+index 3aaec87..76947d5 100644
 --- a/src/CMakeLists.txt
 +++ b/src/CMakeLists.txt
-@@ -30,6 +30,32 @@ add_library(
+@@ -30,6 +30,34 @@ add_library(
    SuperFastHash.cpp
    Types.cpp
    PMurHash.c
@@ -32,14 +32,16 @@ index 3aaec87..c48214b 100644
 +  avx_hash3.c
 +  aes_test.c
 +  aes_hash.c
++  aes_test2.c
++  aes_hash2.c
  )
  
  add_executable(
 diff --git a/src/main.cpp b/src/main.cpp
-index 678ddb2..c45cc2a 100644
+index 678ddb2..2b97712 100644
 --- a/src/main.cpp
 +++ b/src/main.cpp
-@@ -5,6 +5,19 @@
+@@ -5,6 +5,20 @@
  #include "AvalancheTest.h"
  #include "DifferentialTest.h"
  #include "PMurHash.h"
@@ -56,10 +58,11 @@ index 678ddb2..c45cc2a 100644
 +#include "avx_test2.h"
 +#include "avx_test3.h"
 +#include "aes_test.h"
++#include "aes_test2.h"
  
  #include <stdio.h>
  #include <time.h>
-@@ -80,6 +93,20 @@ HashInfo g_hashes[] =
+@@ -80,6 +94,21 @@ HashInfo g_hashes[] =
    { MurmurHash3_x64_128, 128, 0x6384BA69, "Murmur3F",    "MurmurHash3 for x64, 128-bit" },
  
    { PMurHash32_test,      32, 0xB0F57EE3, "PMurHash32",  "Shane Day's portable-ized MurmurHash3 for x86, 32-bit." },
@@ -77,6 +80,7 @@ index 678ddb2..c45cc2a 100644
 +  { avx_hash2_test,      128, 0x6BFA6432, "AVXHash2",    "AVX Hash 2 128-bit" },
 +  { avx_hash3_test,      256, 0xE4E69855, "AVXHash3",    "AVX Hash 3 256-bit" },
 +  { aes_hash_test,       128, 0x31F40A1B, "AESHash",     "AES Hash 128-bit"   },
++  { aes_hash2_test,     1024, 0x8DE30EDF, "AESHash2",    "AES Hash 1024-bit"  },
  };
  
  HashInfo * findHash ( const char * name )
