@@ -15,7 +15,9 @@ static const __m128i k7 = { 0xac0120817de73b56, 0xa5be99de5ff769dd };
 static const __m128i k8 = { 0x7541811329b4609f, 0x4c4cfa866064ec93 };
 
 static inline void
-mix1024(__m128i * const h1, __m128i * const h2, __m128i * const h3, __m128i * const h4, __m128i * const h5, __m128i * const h6, __m128i * const h7, __m128i * const h8)
+mix1024(__m128i * const h1, __m128i * const h2, __m128i * const h3,
+    __m128i * const h4, __m128i * const h5, __m128i * const h6,
+    __m128i * const h7, __m128i * const h8)
 {
 	__m128i x1, x2, x3, x4, x5, x6, x7, x8;
 
