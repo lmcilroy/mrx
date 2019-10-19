@@ -50,7 +50,7 @@ sse_hash_start(sse_hash_state_t * const state)
 {
 	uint64_t seed[2] = { 0, 0 };
 
-	sse_hash_start_seed(state, &seed);
+	sse_hash_start_seed(state, seed);
 }
 
 void
@@ -175,5 +175,5 @@ sse_hash(const void * const data, const size_t len, sse_hash_t * const hash)
 {
 	uint64_t seed[2] = { 0, 0 };
 
-	sse_hash_seed(data, len, &seed, hash);
+	sse_hash_seed(data, len, seed, hash);
 }

@@ -107,7 +107,7 @@ avx_hash3_start(avx_hash3_state_t * const state)
 {
 	uint64_t seed[4] = { 0, 0, 0, 0 };
 
-	avx_hash3_start_seed(state, &seed);
+	avx_hash3_start_seed(state, seed);
 }
 
 void
@@ -267,5 +267,5 @@ avx_hash3(const void * const data, const size_t len, avx_hash3_t * const hash)
 {
 	uint64_t seed[4] = { 0, 0, 0, 0 };
 
-	avx_hash3_seed(data, len, &seed, hash);
+	avx_hash3_seed(data, len, seed, hash);
 }

@@ -62,7 +62,7 @@ aes_hash2_start(aes_hash2_state_t * const state)
 {
 	uint64_t seed[2] = { 0, 0 };
 
-	aes_hash2_start_seed(state, &seed);
+	aes_hash2_start_seed(state, seed);
 }
 
 void
@@ -211,5 +211,5 @@ aes_hash2(const void * const data, const size_t len, aes_hash2_t * const hash)
 {
 	uint64_t seed[2] = { 0, 0 };
 
-	aes_hash2_seed(data, len, &seed, hash);
+	aes_hash2_seed(data, len, seed, hash);
 }

@@ -110,7 +110,7 @@ avx_hash2_start(avx_hash2_state_t * const state)
 {
 	uint64_t seed[4] = { 0, 0, 0, 0 };
 
-	avx_hash2_start_seed(state, &seed);
+	avx_hash2_start_seed(state, seed);
 }
 
 void
@@ -279,5 +279,5 @@ avx_hash2(const void * const data, const size_t len, avx_hash2_t * const hash)
 {
 	uint64_t seed[4] = { 0, 0, 0, 0 };
 
-	avx_hash2_seed(data, len, &seed, hash);
+	avx_hash2_seed(data, len, seed, hash);
 }

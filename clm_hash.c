@@ -73,7 +73,7 @@ clm_hash_start(clm_hash_state_t * const state)
 {
 	uint64_t seed[2] = { 0, 0 };
 
-	clm_hash_start_seed(state, &seed);
+	clm_hash_start_seed(state, seed);
 }
 
 void
@@ -215,5 +215,5 @@ clm_hash(const void * const data, const size_t len, clm_hash_t * const hash)
 {
 	uint64_t seed[2] = { 0, 0 };
 
-	clm_hash_seed(data, len, &seed, hash);
+	clm_hash_seed(data, len, seed, hash);
 }

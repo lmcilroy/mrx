@@ -38,7 +38,7 @@ aes_hash_start(aes_hash_state_t * const state)
 {
 	uint64_t seed[2] = { 0, 0 };
 
-	aes_hash_start_seed(state, &seed);
+	aes_hash_start_seed(state, seed);
 }
 
 void
@@ -193,5 +193,5 @@ aes_hash(const void * const data, const size_t len, aes_hash_t * const hash)
 {
 	uint64_t seed[2] = { 0, 0 };
 
-	aes_hash_seed(data, len, &seed, hash);
+	aes_hash_seed(data, len, seed, hash);
 }

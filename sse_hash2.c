@@ -62,7 +62,7 @@ sse_hash2_start(sse_hash2_state_t * const state)
 {
 	uint64_t seed[2] = { 0, 0 };
 
-	sse_hash2_start_seed(state, &seed);
+	sse_hash2_start_seed(state, seed);
 }
 
 void
@@ -191,5 +191,5 @@ sse_hash2(const void * const data, const size_t len, sse_hash2_t * const hash)
 {
 	uint64_t seed[2] = { 0, 0 };
 
-	sse_hash2_seed(data, len, &seed, hash);
+	sse_hash2_seed(data, len, seed, hash);
 }
