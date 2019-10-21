@@ -218,7 +218,7 @@ avx_hash3_end(avx_hash3_state_t * const state, avx_hash3_t * const hash)
 	x7 = state->x7;
 	x8 = state->x8;
 
-	for (i = 0; i < 8; i++) {
+	for (i = 0; i < 4; i++) {
 		x1 = mix256(x1);
 		x2 = mix256(x2);
 		x3 = mix256(x3);

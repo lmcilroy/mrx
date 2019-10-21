@@ -1,8 +1,8 @@
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index 57b3116..30ccca0 100644
+index 57b3116..0464a4f 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -234,6 +234,32 @@ add_library(SMHasherSupport
+@@ -234,6 +234,34 @@ add_library(SMHasherSupport
    mum.cc
    jody_hash32.c
    jody_hash64.c
@@ -32,14 +32,16 @@ index 57b3116..30ccca0 100644
 +  avx_hash3.c
 +  aes_test.c
 +  aes_hash.c
++  aes_test2.c
++  aes_hash2.c
  )
  
  add_executable(
 diff --git a/main.cpp b/main.cpp
-index 7d887a1..54663fe 100644
+index 7d887a1..d2fd815 100644
 --- a/main.cpp
 +++ b/main.cpp
-@@ -15,6 +15,19 @@
+@@ -15,6 +15,20 @@
  #endif
  #include "md5.h"
  #include "siphash.h"
@@ -56,26 +58,28 @@ index 7d887a1..54663fe 100644
 +#include "avx_test2.h"
 +#include "avx_test3.h"
 +#include "aes_test.h"
++#include "aes_test2.h"
  #include <stdio.h>
  #include <time.h>
  #include "VERSION.h"
-@@ -468,6 +481,19 @@ HashInfo g_hashes[] =
+@@ -468,6 +482,20 @@ HashInfo g_hashes[] =
    { "MUM", "github.com/vnmakarov/mum-hash",
      64, 64, 64, 0x73F6BFD7,
      NULL, mum_hash_with_state_test },
-+  { "MRXHash32", "MRX Hash 32-bit",     32,  128,   32, 0x98468248, NULL, mrx_hash_32_test2 },
-+  { "MRXHash64", "MRX Hash 64-bit",     64,  256,   64, 0x80FFB9F8, NULL, mrx_hash_64_test2 },
-+  { "MLXHash",   "MLX Hash 64-bit",     64,  256,   64, 0x69B66660, NULL, mlx_hash_test2    },
-+  { "MLXHash2",  "MLX Hash 2 256-bit",  64,  256,  256, 0xAEFC5675, NULL, mlx_hash2_test2   },
-+  { "SPBHash",   "SPB Hash 64-bit",     64,  256,   64, 0x6AC50942, NULL, spb_hash_test2    },
-+  { "SSEHash",   "SSE Hash 128-bit",   128,  512,  128, 0x0F8E10D3, NULL, sse_hash_test2    },
-+  { "SSEHash2",  "SSE Hash 2 128-bit", 128,  512,  128, 0x7B0ECE67, NULL, sse_hash2_test2   },
-+  { "CLMHash",   "CLM Hash 128-bit",   128, 1024,  128, 0x5C31E850, NULL, clm_hash_test2    },
-+  { "CLMHash2",  "CLM Hash 1024-bit",  128, 1024, 1024, 0x00000000, NULL, clm_hash2_test2   },
-+  { "AVXHash",   "AVX Hash 128-bit",   256, 2048,  128, 0x28F92B45, NULL, avx_hash_test2    },
-+  { "AVXHash2",  "AVX Hash 2 128-bit", 256, 2048,  128, 0xD40344A8, NULL, avx_hash2_test2   },
-+  { "AVXHash3",  "AVX Hash 3 256-bit", 256, 2048,  256, 0x54ABFC3D, NULL, avx_hash3_test2   },
-+  { "AESHash",   "AES Hash 128-bit",   128, 1024,  128, 0x96326591, NULL, aes_hash_test2    },
++  { "MRXHash32", "MRX Hash 32-bit",      32,  128,   32, 0x98468248, NULL, mrx_hash_32_test2 },
++  { "MRXHash64", "MRX Hash 64-bit",      64,  256,   64, 0x80FFB9F8, NULL, mrx_hash_64_test2 },
++  { "MLXHash",   "MLX Hash 64-bit",      64,  256,   64, 0x69B66660, NULL, mlx_hash_test2    },
++  { "MLXHash2",  "MLX Hash 2 256-bit",   64,  256,  256, 0xAEFC5675, NULL, mlx_hash2_test2   },
++  { "SPBHash",   "SPB Hash 64-bit",      64,  256,   64, 0x6AC50942, NULL, spb_hash_test2    },
++  { "SSEHash",   "SSE Hash 128-bit",    128,  512,  128, 0x0F8E10D3, NULL, sse_hash_test2    },
++  { "SSEHash2",  "SSE Hash 2 128-bit",  128,  512,  128, 0x7B0ECE67, NULL, sse_hash2_test2   },
++  { "CLMHash",   "CLM Hash 128-bit",    128, 1024,  128, 0x5C31E850, NULL, clm_hash_test2    },
++  { "CLMHash2",  "CLM Hash 1024-bit",   128, 1024, 1024, 0x00000000, NULL, clm_hash2_test2   },
++  { "AVXHash",   "AVX Hash 128-bit",    256, 2048,  128, 0x28F92B45, NULL, avx_hash_test2    },
++  { "AVXHash2",  "AVX Hash 2 128-bit",  256, 2048,  128, 0xD40344A8, NULL, avx_hash2_test2   },
++  { "AVXHash3",  "AVX Hash 3 256-bit",  256, 2048,  256, 0x805211A1, NULL, avx_hash3_test2   },
++  { "AESHash",   "AES Hash 128-bit",    128, 1024,  128, 0x96326591, NULL, aes_hash_test2    },
++  { "AESHash2",  "AES Hash 2 1024-bit", 128, 1024, 1024, 0x00000000, NULL, aes_hash2_test2   },
  };
  int g_hashes_sizeof= sizeof(g_hashes);
  

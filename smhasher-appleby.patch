@@ -38,7 +38,7 @@ index 3aaec87..76947d5 100644
  
  add_executable(
 diff --git a/src/main.cpp b/src/main.cpp
-index 678ddb2..2b97712 100644
+index 678ddb2..6a6cd55 100644
 --- a/src/main.cpp
 +++ b/src/main.cpp
 @@ -5,6 +5,20 @@
@@ -78,9 +78,9 @@ index 678ddb2..2b97712 100644
 +  { clm_hash2_test,     1024, 0x7E53E79F, "CLMHash2",    "CLM Hash 2 1024-bit"},
 +  { avx_hash_test,       128, 0x10402FB3, "AVXHash",     "AVX Hash 128-bit"   },
 +  { avx_hash2_test,      128, 0x6BFA6432, "AVXHash2",    "AVX Hash 2 128-bit" },
-+  { avx_hash3_test,      256, 0xE4E69855, "AVXHash3",    "AVX Hash 3 256-bit" },
++  { avx_hash3_test,      256, 0x1504AD4B, "AVXHash3",    "AVX Hash 3 256-bit" },
 +  { aes_hash_test,       128, 0x31F40A1B, "AESHash",     "AES Hash 128-bit"   },
-+  { aes_hash2_test,     1024, 0x8DE30EDF, "AESHash2",    "AES Hash 1024-bit"  },
++  { aes_hash2_test,     1024, 0x410BBA63, "AESHash2",    "AES Hash 1024-bit"  },
  };
  
  HashInfo * findHash ( const char * name )
