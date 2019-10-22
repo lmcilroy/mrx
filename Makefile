@@ -1,4 +1,4 @@
-CFLAGS=-O3 -maes -msse4.2 -mavx2 -mpclmul -fPIC -march=native -funroll-loops -Wall -Werror -Wcast-align -Wstrict-overflow -Wstrict-aliasing -Wextra -pedantic -Wshadow
+CFLAGS=-O3 -march=native -fno-tree-vectorize -fno-tree-slp-vectorize -fPIC -funroll-loops -Wall -Werror -Wcast-align -Wstrict-overflow -Wstrict-aliasing -Wextra -pedantic -Wshadow
 
 all:	mrx
 
