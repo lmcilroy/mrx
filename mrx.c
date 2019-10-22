@@ -177,16 +177,17 @@ usage(void)
 }
 
 static void
-print_hash(unsigned char *hash, uint32_t len)
+print_hash(const void * const hash, const uint32_t len)
 {
+	const unsigned char * const p = hash;
 	uint32_t i;
 
 	for (i = 0; i < len; i++)
-		printf("%02x", hash[i]);
+		printf("%02x", p[i]);
 }
 
 static inline void
-gendata(unsigned char * const buffer, size_t size)
+gendata(unsigned char * const buffer, const size_t size)
 {
 	size_t pos = 0;
 
@@ -437,7 +438,7 @@ process_data(const int fd, struct mrx_args * const args)
  out:
 
 	if (ret == 0 && args->check == false) {
-		print_hash((unsigned char *)args->hash, hf->hash_size);
+		print_hash(args->hash, hf->hash_size);
 		printf(" %s\n", args->filename);
 	}
 
