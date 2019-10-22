@@ -25,17 +25,15 @@ final64(const uint64_t h)
 }
 
 static inline void
-mix256(uint64_t *x1, uint64_t *x2, uint64_t *x3, uint64_t *x4)
+mix256(uint64_t * const x1, uint64_t * const x2, uint64_t * const x3,
+    uint64_t * const x4)
 {
-	__uint128_t r1, r2;
+	unsigned long long hi1, hi2;
 
-	r1 = (__uint128_t)(*x1 ^ k0) * (__uint128_t)(*x2 ^ k1);
-	r2 = (__uint128_t)(*x3 ^ k0) * (__uint128_t)(*x4 ^ k1);
-
-	*x1 = (uint64_t)(r1);
-	*x4 = (uint64_t)(r1 >> 64);
-	*x3 = (uint64_t)(r2);
-	*x2 = (uint64_t)(r2 >> 64);
+	*x1 = _mulx_u64(*x1 ^ k0, *x2 ^ k1, &hi1);
+	*x3 = _mulx_u64(*x3 ^ k0, *x4 ^ k1, &hi2);
+	*x4 = hi1;
+	*x2 = hi2;
 }
 
 void

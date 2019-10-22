@@ -21,10 +21,11 @@ rotate64(const uint64_t x, const uint8_t s)
 static inline uint64_t
 round64(const uint64_t h, const uint64_t x0, const uint64_t x1)
 {
-	__uint128_t r;
+	unsigned long long lo, hi;
 
-	r = (__uint128_t)(h ^ x0 ^ k0) * (__uint128_t)(x1 ^ k1);
-	return (uint64_t)(r) ^ (uint64_t)(r >> 64);
+	lo = _mulx_u64(h ^ x0 ^ k0, x1 ^ k1, &hi);
+
+	return lo ^ hi;
 }
 
 static inline uint64_t

@@ -2,6 +2,8 @@
 extern "C" {
 #endif
 
+#include <x86intrin.h>
+
 struct mlx_hash2_state {
 	union {
 		uint64_t ints[4];
