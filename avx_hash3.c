@@ -238,9 +238,7 @@ avx_hash3_end(avx_hash3_state_t * const state, avx_hash3_t * const hash)
 	x7 = fmix256(x7);
 	x8 = fmix256(x8);
 
-	h = _mm256_setzero_si256();
-	h = combine256(h, x1);
-	h = combine256(h, x2);
+	h = combine256(x1, x2);
 	h = combine256(h, x3);
 	h = combine256(h, x4);
 	h = combine256(h, x5);
