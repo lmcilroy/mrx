@@ -1,3 +1,4 @@
+CC=gcc
 CFLAGS=-O3 -march=native -fno-tree-vectorize -fno-tree-slp-vectorize -fPIC -funroll-loops -Wall -Werror -Wcast-align -Wstrict-overflow -Wstrict-aliasing -Wextra -pedantic -Wshadow
 
 all:	mrx
