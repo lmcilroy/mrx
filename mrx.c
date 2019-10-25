@@ -24,11 +24,13 @@
 #include "spb_hash.h"
 #include "sse_hash.h"
 #include "sse_hash2.h"
+#include "sse_hash3.h"
 #include "clm_hash.h"
 #include "clm_hash2.h"
 #include "avx_hash.h"
 #include "avx_hash2.h"
 #include "avx_hash3.h"
+#include "avx_hash4.h"
 #include "aes_hash.h"
 #include "aes_hash2.h"
 
@@ -36,7 +38,7 @@
 #define false		0
 #define true		1
 
-#define HASH_FUNCS	14
+#define HASH_FUNCS	16
 
 typedef void (*hf_single)(const void * const data, const size_t len,
     void * const hash);
@@ -97,6 +99,12 @@ struct hash_func hash_funcs[HASH_FUNCS] = {
 	    (hf_start)sse_hash2_start,
 	    (hf_update)sse_hash2_update,
 	    (hf_end)sse_hash2_end },
+	{ "ssehash3",
+	    sizeof(sse_hash3_t),
+	    (hf_single)sse_hash3,
+	    (hf_start)sse_hash3_start,
+	    (hf_update)sse_hash3_update,
+	    (hf_end)sse_hash3_end },
 	{ "clmhash",
 	    sizeof(clm_hash_t),
 	    (hf_single)clm_hash,
@@ -127,6 +135,12 @@ struct hash_func hash_funcs[HASH_FUNCS] = {
 	    (hf_start)avx_hash3_start,
 	    (hf_update)avx_hash3_update,
 	    (hf_end)avx_hash3_end },
+	{ "avxhash4",
+	    sizeof(avx_hash4_t),
+	    (hf_single)avx_hash4,
+	    (hf_start)avx_hash4_start,
+	    (hf_update)avx_hash4_update,
+	    (hf_end)avx_hash4_end },
 	{ "aeshash",
 	    sizeof(aes_hash_t),
 	    (hf_single)aes_hash,
@@ -403,11 +417,13 @@ process_data(const int fd, struct mrx_args * const args)
 		spb_hash_state_t spb_hash_state;
 		sse_hash_state_t sse_hash_state;
 		sse_hash2_state_t sse_hash2_state;
+		sse_hash3_state_t sse_hash3_state;
 		clm_hash_state_t clm_hash_state;
 		clm_hash2_state_t clm_hash2_state;
 		avx_hash_state_t avx_hash_state;
 		avx_hash2_state_t avx_hash2_state;
 		avx_hash3_state_t avx_hash3_state;
+		avx_hash4_state_t avx_hash4_state;
 		aes_hash_state_t aes_hash_state;
 		aes_hash2_state_t aes_hash2_state;
 	} state;
