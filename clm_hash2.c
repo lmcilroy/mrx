@@ -194,7 +194,7 @@ clm_hash2_end(clm_hash2_state_t * const state, clm_hash2_t * const hash)
 	x7 = state->x7;
 	x8 = state->x8;
 
-	for (i = 0; i < 16; i++)
+	for (i = 0; i < 9; i++)
 		mix1024(&x1, &x2, &x3, &x4, &x5, &x6, &x7, &x8);
 
 	h[0] = final128(x1);
