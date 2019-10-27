@@ -218,8 +218,7 @@ gendata(unsigned char * const buffer, const size_t size)
 
 #define	BENCH_TIME	3000000000
 #define	BENCH_TESTS	5
-#define	BENCH_SIZE	(100UL << 10)
-#define BENCH_ITERS	100
+#define	BENCH_ITERS	10000
 
 static inline unsigned long
 rdtsc(void)
