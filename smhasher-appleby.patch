@@ -1,8 +1,8 @@
 diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
-index 3aaec87..76947d5 100644
+index 3aaec87..c40a97b 100644
 --- a/src/CMakeLists.txt
 +++ b/src/CMakeLists.txt
-@@ -30,6 +30,34 @@ add_library(
+@@ -30,6 +30,40 @@ add_library(
    SuperFastHash.cpp
    Types.cpp
    PMurHash.c
@@ -14,12 +14,16 @@ index 3aaec87..76947d5 100644
 +  mlx_hash.c
 +  mlx_test2.c
 +  mlx_hash2.c
++  mlx_test3.c
++  mlx_hash3.c
 +  spb_test.c
 +  spb_hash.c
 +  sse_test.c
 +  sse_hash.c
 +  sse_test2.c
 +  sse_hash2.c
++  sse_test3.c
++  sse_hash3.c
 +  clm_test.c
 +  clm_hash.c
 +  clm_test2.c
@@ -30,6 +34,8 @@ index 3aaec87..76947d5 100644
 +  avx_hash2.c
 +  avx_test3.c
 +  avx_hash3.c
++  avx_test4.c
++  avx_hash4.c
 +  aes_test.c
 +  aes_hash.c
 +  aes_test2.c
@@ -38,10 +44,10 @@ index 3aaec87..76947d5 100644
  
  add_executable(
 diff --git a/src/main.cpp b/src/main.cpp
-index 678ddb2..6a6cd55 100644
+index 678ddb2..ae1c7ad 100644
 --- a/src/main.cpp
 +++ b/src/main.cpp
-@@ -5,6 +5,20 @@
+@@ -5,6 +5,23 @@
  #include "AvalancheTest.h"
  #include "DifferentialTest.h"
  #include "PMurHash.h"
@@ -49,20 +55,23 @@ index 678ddb2..6a6cd55 100644
 +#include "mrx_test64.h"
 +#include "mlx_test.h"
 +#include "mlx_test2.h"
++#include "mlx_test3.h"
 +#include "spb_test.h"
 +#include "sse_test.h"
 +#include "sse_test2.h"
++#include "sse_test3.h"
 +#include "clm_test.h"
 +#include "clm_test2.h"
 +#include "avx_test.h"
 +#include "avx_test2.h"
 +#include "avx_test3.h"
++#include "avx_test4.h"
 +#include "aes_test.h"
 +#include "aes_test2.h"
  
  #include <stdio.h>
  #include <time.h>
-@@ -80,6 +94,21 @@ HashInfo g_hashes[] =
+@@ -80,6 +97,24 @@ HashInfo g_hashes[] =
    { MurmurHash3_x64_128, 128, 0x6384BA69, "Murmur3F",    "MurmurHash3 for x64, 128-bit" },
  
    { PMurHash32_test,      32, 0xB0F57EE3, "PMurHash32",  "Shane Day's portable-ized MurmurHash3 for x86, 32-bit." },
@@ -71,14 +80,17 @@ index 678ddb2..6a6cd55 100644
 +  { mrx_hash_64_test,     64, 0x105BEBA1, "MRXHash64",   "MRX Hash 64-bit"    },
 +  { mlx_hash_test,        64, 0xC82648D6, "MLXHash",     "MLX Hash 64-bit"    },
 +  { mlx_hash2_test,      256, 0x828F8214, "MLXHash2",    "MLX Hash 2 256-bit" },
++  { mlx_hash3_test,      128, 0x7A86C343, "MLXHash3",    "MLX Hash 3 128-bit" },
 +  { spb_hash_test,        64, 0xA79A37D7, "SPBHash",     "SPB Hash 64-bit"    },
 +  { sse_hash_test,       128, 0x96F6A310, "SSEHash",     "SSE Hash 128-bit"   },
 +  { sse_hash2_test,      128, 0x8862E0EE, "SSEHash2",    "SSE Hash 2 128-bit" },
++  { sse_hash3_test,      128, 0x50048925, "SSEHash3",    "SSE Hash 3 128-bit" },
 +  { clm_hash_test,       128, 0x3EACE642, "CLMHash",     "CLM Hash 128-bit"   },
-+  { clm_hash2_test,     1024, 0x7E53E79F, "CLMHash2",    "CLM Hash 2 1024-bit"},
++  { clm_hash2_test,     1024, 0xD8AFF3CF, "CLMHash2",    "CLM Hash 2 1024-bit"},
 +  { avx_hash_test,       128, 0x10402FB3, "AVXHash",     "AVX Hash 128-bit"   },
 +  { avx_hash2_test,      128, 0x6BFA6432, "AVXHash2",    "AVX Hash 2 128-bit" },
 +  { avx_hash3_test,      256, 0x1504AD4B, "AVXHash3",    "AVX Hash 3 256-bit" },
++  { avx_hash4_test,      128, 0xA55D8DE7, "AVXHash4",    "AVX Hash 4 128-bit" },
 +  { aes_hash_test,       128, 0x31F40A1B, "AESHash",     "AES Hash 128-bit"   },
 +  { aes_hash2_test,     1024, 0x410BBA63, "AESHash2",    "AES Hash 1024-bit"  },
  };

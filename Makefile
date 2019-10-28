@@ -3,9 +3,9 @@ CFLAGS=-O3 -march=native -fno-tree-vectorize -fno-tree-slp-vectorize -fPIC -funr
 
 all:	mrx
 
-mrx:	mrx.o mrx_hash32.o mrx_hash64.o mlx_hash.o mlx_hash2.o spb_hash.o aes_hash.o aes_hash2.o sse_hash.o sse_hash2.o sse_hash3.o clm_hash.o clm_hash2.o avx_hash.o avx_hash2.o avx_hash3.o avx_hash4.o
+mrx:	mrx.o mrx_hash32.o mrx_hash64.o mlx_hash.o mlx_hash2.o mlx_hash3.o spb_hash.o aes_hash.o aes_hash2.o sse_hash.o sse_hash2.o sse_hash3.o clm_hash.o clm_hash2.o avx_hash.o avx_hash2.o avx_hash3.o avx_hash4.o
 
-mrx.o:	mrx.c mrx_hash32.h mrx_hash64.h mlx_hash.h mlx_hash2.h spb_hash.h mem.h aes_hash.h aes_hash2.h sse_hash.h sse_hash2.h sse_hash3.h clm_hash.h clm_hash2.h avx_hash.h avx_hash2.h avx_hash3.h avx_hash4.h
+mrx.o:	mrx.c mrx_hash32.h mrx_hash64.h mlx_hash.h mlx_hash2.h mlx_hash3.h spb_hash.h mem.h aes_hash.h aes_hash2.h sse_hash.h sse_hash2.h sse_hash3.h clm_hash.h clm_hash2.h avx_hash.h avx_hash2.h avx_hash3.h avx_hash4.h
 
 mrx_hash32.o: mrx_hash32.c mrx_hash32.h mem.h
 
@@ -14,6 +14,8 @@ mrx_hash64.o: mrx_hash64.c mrx_hash64.h mem.h
 mlx_hash.o: mlx_hash.c mlx_hash.h mem.h
 
 mlx_hash2.o: mlx_hash2.c mlx_hash2.h mem.h
+
+mlx_hash3.o: mlx_hash3.c mlx_hash3.h mem.h
 
 spb_hash.o: spb_hash.c spb_hash.h mem.h
 
