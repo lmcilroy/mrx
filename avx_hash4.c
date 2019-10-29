@@ -75,18 +75,6 @@ round256(const __m256i h, const __m256i x)
 }
 
 static inline __m256i
-fmix256(const __m256i h)
-{
-	__m256i a;
-
-	a = _mm256_xor_si256(h, _mm256_srli_epi32(h, 16));
-	a = _mm256_mullo_epi32(a, m1);
-	a = _mm256_xor_si256(a, _mm256_srli_epi32(a, 16));
-
-	return a;
-}
-
-static inline __m256i
 combine256(const __m256i h, const __m256i x)
 {
 	__m256i a, m;
