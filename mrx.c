@@ -40,6 +40,7 @@
 #define true		1
 
 #define HASH_FUNCS	17
+#define HASH_TYPE_DEF	14
 
 typedef void (*hf_single)(const void * const data, const size_t len,
     void * const hash);
@@ -246,12 +247,10 @@ gettime(void)
 	return ts.tv_sec * 1000000000 + ts.tv_nsec;
 }
 
-static unsigned int
-benchmark(struct mrx_args * const args)
+static inline void
+benchmark_hash(struct mrx_args * const args)
 {
 	struct hash_func *hf;
-	unsigned char *buffer;
-	cpu_set_t cpuset;
 	double rate;
 	double best_rate;
 	double bpc;
@@ -263,32 +262,60 @@ benchmark(struct mrx_args * const args)
 	uint64_t time;
 	uint32_t test;
 	uint32_t i;
-	int ret = 0;
-	int cpu;
-	int s;
 
-	buffer = NULL;
+	hf = &hash_funcs[args->hash_type];
 
-	ret = posix_memalign((void **)&buffer, getpagesize(),
-	    args->block_size);
-	if (ret != 0) {
-		ret = ENOMEM;
-		fprintf(stderr, "Failed to allocate %ld bytes: %s\n",
-		    args->st->st_size, strerror(ret));
-		goto out;
+	best_rate = 0;
+	best_bpc = 0;
+	printf("cooling...\r");
+	fflush(stdout);
+	sleep(30);
+	printf("%*s: ", 10, hf->hash_name);
+	fflush(stdout);
+
+	for (test = 0; test < BENCH_TESTS; test++) {
+
+		sleep(5);
+		iterations = 0;
+		ts_start = gettime();
+		cycles = rdtsc();
+
+		do {
+			for (i = 0; i < BENCH_ITERS; i++) {
+				hf->hash_single(args->buffer,
+				    args->block_size, args->hash);
+			}
+
+			time = gettime() - ts_start;
+			iterations += BENCH_ITERS;
+
+		} while (time < BENCH_TIME);
+
+		cycles = rdtsc() - cycles;
+		bytes = args->block_size * iterations;
+		rate = (double)bytes / (double)(time / 1000);
+		bpc = (double)bytes / (double)cycles;
+		printf("%8.2f ", rate);
+		fflush(stdout);
+
+		if (rate > best_rate) {
+			best_rate = rate;
+			best_bpc = bpc;
+		}
 	}
 
-	gendata(buffer, args->block_size);
+	printf("--> %8.2f MB/s (%.2f b/c)\n", best_rate, best_bpc);
+	fflush(stdout);
+}
 
-	cpu = sched_getcpu();
-	if (cpu == -1) {
-		ret = errno;
-		fprintf(stderr, "Failed to get cpu: %s\n", strerror(ret));
-		goto out;
-	}
+static unsigned int
+benchmark(struct mrx_args * const args)
+{
+	cpu_set_t cpuset;
+	int ret;
 
 	CPU_ZERO(&cpuset);
-	CPU_SET(cpu, &cpuset);
+	CPU_SET(1, &cpuset);
 	ret = sched_setaffinity(0, sizeof(cpu_set_t), &cpuset);
 	if (ret != 0) {
 		ret = errno;
@@ -297,57 +324,19 @@ benchmark(struct mrx_args * const args)
 		goto out;
 	}
 
-	for (i = 0; i < HASH_FUNCS; i++) {
+	gendata(args->buffer, args->block_size);
 
-		if (args->hash_type != HASH_FUNCS && args->hash_type != i)
-			continue;
-
-		hf = &hash_funcs[i];
-
-		best_rate = 0;
-		best_bpc = 0;
-		printf("%*s: ", 10, hf->hash_name);
-		fflush(stdout);
-
-		for (test = 0; test < BENCH_TESTS; test++) {
-
-			iterations = 0;
-			sleep(1);
-			ts_start = gettime();
-			cycles = rdtsc();
-
-			do {
-				for (s = 0; s < BENCH_ITERS; s++) {
-					hf->hash_single(args->buffer,
-					    args->block_size, args->hash);
-				}
-
-				time = gettime() - ts_start;
-				iterations += BENCH_ITERS;
-
-			} while (time < BENCH_TIME);
-
-			cycles = rdtsc() - cycles;
-			bytes = args->block_size * iterations;
-			rate = (double)bytes / (double)(time / 1000);
-			bpc = (double)bytes / (double)cycles;
-			printf("%8.2f ", rate);
-			fflush(stdout);
-
-			if (rate > best_rate) {
-				best_rate = rate;
-				best_bpc = bpc;
-			}
+	if (args->hash_type != HASH_FUNCS)
+		benchmark_hash(args);
+	else {
+		for (args->hash_type = 0;
+		    args->hash_type < HASH_FUNCS;
+		    args->hash_type++) {
+			benchmark_hash(args);
 		}
-
-		printf("--> %8.2f MB/s (%.2f b/c)\n", best_rate, best_bpc);
-		fflush(stdout);
 	}
+
  out:
-
-	if (buffer != NULL)
-		free(buffer);
-
 	return ret;
 }
 
@@ -841,7 +830,7 @@ main(int argc, char **argv)
 	}
 
 	if (args.hash_type == HASH_FUNCS)
-		args.hash_type = HASH_FUNCS - 1;
+		args.hash_type = HASH_TYPE_DEF;
 
 	file_list = &argv[optind];
 	files = argc - optind;
