@@ -32,7 +32,7 @@ mix128(const __m128i h)
 	__m128i a, b;
 
 	a = _mm_xor_si128(h, k1);
-	b = _mm_srli_epi64(a, 32);
+	b = _mm_shuffle_epi32(a, 0x31);
 	a = _mm_mul_epu32(a, b);
 	a = _mm_alignr_epi8(a, a, 2);
 
@@ -62,7 +62,7 @@ mix256(const __m256i h)
 	__m256i a, b;
 
 	a = _mm256_xor_si256(h, m1);
-	b = _mm256_srli_epi64(a, 32);
+	b = _mm256_shuffle_epi32(a, 0x31);
 	a = _mm256_mul_epu32(a, b);
 	a = _mm256_alignr_epi8(a, a, 2);
 
