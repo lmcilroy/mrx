@@ -852,6 +852,12 @@ main(int argc, char **argv)
 	if (args.hash_type == HASH_FUNCS)
 		args.hash_type = HASH_TYPE_DEF;
 
+	if (hash_funcs[args.hash_type].hash_start == NULL) {
+		ret = EINVAL;
+		fprintf(stderr, "Hash type does not support streaming mode\n");
+		goto out;
+	}
+
 	file_list = &argv[optind];
 	files = argc - optind;
 
