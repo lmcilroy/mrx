@@ -262,7 +262,11 @@ benchmark_hash(struct mrx_args * const args)
 	double best_rate;
 	double bpc;
 	double best_bpc;
+	double cph;
+	double best_cph;
 	uint64_t bytes;
+	uint64_t start;
+	uint64_t end;
 	uint64_t cycles;
 	uint64_t ts_start;
 	uint64_t iterations;
@@ -274,6 +278,7 @@ benchmark_hash(struct mrx_args * const args)
 
 	best_rate = 0;
 	best_bpc = 0;
+	best_cph = 0;
 	printf("cooling...\r");
 	fflush(stdout);
 	sleep(30);
@@ -283,35 +288,42 @@ benchmark_hash(struct mrx_args * const args)
 	for (test = 0; test < BENCH_TESTS; test++) {
 
 		sleep(5);
+		cycles = 0;
 		iterations = 0;
 		ts_start = gettime();
-		cycles = rdtsc();
 
 		do {
+			start = rdtsc();
+
 			for (i = 0; i < BENCH_ITERS; i++) {
 				hf->hash_single(args->buffer,
 				    args->block_size, args->hash);
 			}
 
+			end = rdtsc();
+
+			cycles += end - start;
 			time = gettime() - ts_start;
 			iterations += BENCH_ITERS;
 
 		} while (time < BENCH_TIME);
 
-		cycles = rdtsc() - cycles;
 		bytes = args->block_size * iterations;
 		rate = (double)bytes / (double)(time / 1000);
 		bpc = (double)bytes / (double)cycles;
+		cph = (double)cycles / (double)iterations;
 		printf("%8.2f ", rate);
 		fflush(stdout);
 
 		if (rate > best_rate) {
 			best_rate = rate;
 			best_bpc = bpc;
+			best_cph = cph;
 		}
 	}
 
-	printf("--> %8.2f MB/s (%.2f b/c)\n", best_rate, best_bpc);
+	printf("--> %9.2f MB/s (%5.2f b/c, %10.2f c/h, %9.2f MB/s @ 4GHz)\n",
+	    best_rate, best_bpc, best_cph, best_bpc * 4000000000 / 1000000);
 	fflush(stdout);
 }
 
