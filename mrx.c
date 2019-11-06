@@ -22,6 +22,7 @@
 #include "mlx_hash.h"
 #include "mlx_hash2.h"
 #include "mlx_hash3.h"
+#include "mlx_hash4.h"
 #include "spb_hash.h"
 #include "sse_hash.h"
 #include "sse_hash2.h"
@@ -39,8 +40,8 @@
 #define false		0
 #define true		1
 
-#define HASH_FUNCS	17
-#define HASH_TYPE_DEF	14
+#define HASH_FUNCS	18
+#define HASH_TYPE_DEF	15
 
 typedef void (*hf_single)(const void * const data, const size_t len,
     void * const hash);
@@ -89,6 +90,12 @@ struct hash_func hash_funcs[HASH_FUNCS] = {
 	    (hf_start)mlx_hash3_start,
 	    (hf_update)mlx_hash3_update,
 	    (hf_end)mlx_hash3_end },
+	{ "mlxhash4",
+	    sizeof(mlx_hash4_t),
+	    (hf_single)mlx_hash4,
+	    NULL,
+	    NULL,
+	    NULL},
 	{ "spbhash",
 	    sizeof(spb_hash_t),
 	    (hf_single)spb_hash,
@@ -409,6 +416,7 @@ process_data(const int fd, struct mrx_args * const args)
 		mrx_hash_64_state_t mrx_hash_64_state;
 		mlx_hash_state_t mlx_hash_state;
 		mlx_hash2_state_t mlx_hash2_state;
+		mlx_hash3_state_t mlx_hash3_state;
 		spb_hash_state_t spb_hash_state;
 		sse_hash_state_t sse_hash_state;
 		sse_hash2_state_t sse_hash2_state;
