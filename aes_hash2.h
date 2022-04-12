@@ -23,7 +23,7 @@ struct aes_hash2_state {
 };
 
 struct aes_hash2 {
-	__m128i h[8];
+	uint64_t h[16];
 };
 
 typedef struct aes_hash2_state aes_hash2_state_t;

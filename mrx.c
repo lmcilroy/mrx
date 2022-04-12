@@ -181,7 +181,26 @@ struct mrx_args {
 	uint32_t hash_type;
 	uint32_t check;
 	uint32_t dieharder;
-	uint64_t hash[16];
+	union {
+	    mrx_hash_32_t mrx_hash_32_hash;
+	    mrx_hash_64_t mrx_hash_64_hash;
+	    mlx_hash_t mlx_hash_hash;
+	    mlx_hash2_t mlx_hash2_hash;
+	    mlx_hash3_t mlx_hash3_hash;
+	    mlx_hash4_t mlx_hash4_hash;
+	    spb_hash_t spb_hash_hash;
+	    sse_hash_t sse_hash_hash;
+	    sse_hash2_t sse_hash2_hash;
+	    sse_hash3_t sse_hash3_hash;
+	    clm_hash_t clm_hash_hash;
+	    clm_hash2_t clm_hash2_hash;
+	    avx_hash_t avx_hash_hash;
+	    avx_hash2_t avx_hash2_hash;
+	    avx_hash3_t avx_hash3_hash;
+	    avx_hash4_t avx_hash4_hash;
+	    aes_hash_t aes_hash_hash;
+	    aes_hash2_t aes_hash2_hash;
+	} hash;
 };
 
 static void
@@ -297,7 +316,7 @@ benchmark_hash(struct mrx_args * const args)
 
 			for (i = 0; i < BENCH_ITERS; i++) {
 				hf->hash_single(args->buffer,
-				    args->block_size, args->hash);
+				    args->block_size, &args->hash);
 			}
 
 			end = rdtsc();
@@ -380,11 +399,11 @@ dieharder(struct mrx_args * const args)
 	}
 
 	hf = &hash_funcs[args->hash_type];
-	memset(args->hash, 0, hf->hash_size);
+	memset(&args->hash, 0, hf->hash_size);
 
 	for (;;) {
-		hf->hash_single(args->hash, hf->hash_size, args->hash);
-		ret = write(fd, args->hash, hf->hash_size);
+		hf->hash_single(&args->hash, hf->hash_size, &args->hash);
+		ret = write(fd, &args->hash, hf->hash_size);
 		if (ret < 0) {
 			ret = errno;
 			fprintf(stderr, "Failed to write hash to stdout\n");
@@ -464,12 +483,12 @@ process_data(const int fd, struct mrx_args * const args)
 		hf->hash_update(&state, args->buffer, size);
 	}
 
-	hf->hash_end(&state, args->hash);
+	hf->hash_end(&state, &args->hash);
 
  out:
 
 	if (ret == 0 && args->check == false) {
-		print_hash(args->hash, hf->hash_size);
+		print_hash(&args->hash, hf->hash_size);
 		printf(" %s\n", args->filename);
 	}
 
@@ -732,7 +751,7 @@ process_check(struct mrx_args * const args)
 				    a2x(line[j + 1]);
 			}
 
-			if (memcmp(hash, args->hash,
+			if (memcmp(hash, &args->hash,
 			    hash_funcs[args->hash_type].hash_size) != 0) {
 				fprintf(stderr,
 				    "Error: file %s, failed hash check\n",
